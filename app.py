@@ -5,6 +5,7 @@ import joblib
 import plotly.express as px
 import plotly.graph_objects as go
 
+
 # ============================================================
 # PAGE CONFIGURATION
 # ============================================================
@@ -13,8 +14,9 @@ st.set_page_config(
     page_title="AI Energy & Carbon Intelligence",
     page_icon=None,
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
+
 
 # ============================================================
 # CUSTOM CSS
@@ -23,118 +25,238 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-.stApp {
-    background-color: #f7f8fa;
-}
+    /* ---------- GLOBAL ---------- */
 
-section[data-testid="stSidebar"] {
-    background-color: #111827;
-}
+    .stApp {
+        background: #f5f7fb;
+    }
 
-section[data-testid="stSidebar"] * {
-    color: white;
-}
+    .main {
+        padding-top: 1rem;
+    }
 
-.main-title {
-    font-size: 42px;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 5px;
-}
+    h1, h2, h3 {
+        color: #172033;
+    }
 
-.subtitle {
-    font-size: 18px;
-    color: #6b7280;
-    margin-bottom: 30px;
-}
+    p {
+        color: #566176;
+    }
 
-.section-title {
-    font-size: 27px;
-    font-weight: 650;
-    color: #111827;
-    margin-top: 20px;
-    margin-bottom: 10px;
-}
 
-.metric-card {
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 22px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
+    /* ---------- TOP NAVIGATION ---------- */
 
-.metric-label {
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 5px;
-}
+    div[data-testid="stRadio"] > div {
+        background: #172033;
+        padding: 8px;
+        border-radius: 14px;
+        gap: 5px;
+    }
 
-.metric-value {
-    font-size: 30px;
-    font-weight: 700;
-    color: #111827;
-}
+    div[data-testid="stRadio"] label {
+        background: transparent;
+        color: #dce3f0;
+        border-radius: 10px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 600;
+    }
 
-.metric-description {
-    font-size: 13px;
-    color: #6b7280;
-    margin-top: 5px;
-}
+    div[data-testid="stRadio"] label:hover {
+        background: #26324a;
+        color: white;
+    }
 
-.info-box {
-    background-color: white;
-    border-left: 4px solid #374151;
-    border-radius: 8px;
-    padding: 18px;
-    margin: 15px 0;
-}
+    div[data-testid="stRadio"] label[data-checked="true"] {
+        background: #ffffff;
+        color: #172033;
+    }
 
-.result-box {
-    background-color: #111827;
-    color: white;
-    padding: 28px;
-    border-radius: 12px;
-    margin-top: 20px;
-}
+    div[data-testid="stRadio"] input {
+        display: none;
+    }
 
-.result-title {
-    font-size: 15px;
-    color: #d1d5db;
-}
 
-.result-value {
-    font-size: 38px;
-    font-weight: 700;
-    color: white;
-}
+    /* ---------- HEADER ---------- */
 
-.result-unit {
-    font-size: 16px;
-    color: #d1d5db;
-}
+    .hero {
+        background: linear-gradient(
+            135deg,
+            #172033 0%,
+            #263a5b 55%,
+            #315477 100%
+        );
+        padding: 38px 42px;
+        border-radius: 22px;
+        margin: 15px 0 28px 0;
+        color: white;
+        box-shadow: 0 10px 30px rgba(23,32,51,0.12);
+    }
 
-.finding-card {
-    background-color: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 12px;
-}
+    .hero h1 {
+        color: white;
+        font-size: 38px;
+        margin-bottom: 8px;
+        font-weight: 750;
+    }
 
-.footer {
-    text-align: center;
-    color: #6b7280;
-    font-size: 13px;
-    padding: 30px 0;
-}
+    .hero p {
+        color: #d9e2ef;
+        font-size: 16px;
+        max-width: 850px;
+        line-height: 1.6;
+        margin-bottom: 0;
+    }
+
+
+    /* ---------- SECTION TITLES ---------- */
+
+    .section-title {
+        font-size: 25px;
+        font-weight: 700;
+        color: #172033;
+        margin-top: 15px;
+        margin-bottom: 5px;
+    }
+
+    .section-subtitle {
+        color: #69758a;
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+
+
+    /* ---------- KPI CARDS ---------- */
+
+    .metric-card {
+        background: white;
+        padding: 22px;
+        border-radius: 17px;
+        border: 1px solid #e5e9f1;
+        box-shadow: 0 5px 18px rgba(23,32,51,0.05);
+        min-height: 125px;
+    }
+
+    .metric-label {
+        color: #758096;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+        color: #172033;
+        font-size: 29px;
+        font-weight: 750;
+        margin-top: 8px;
+    }
+
+    .metric-description {
+        color: #8791a3;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+
+    /* ---------- INFO CARDS ---------- */
+
+    .info-card {
+        background: white;
+        border: 1px solid #e5e9f1;
+        border-radius: 17px;
+        padding: 24px;
+        margin-bottom: 18px;
+        box-shadow: 0 5px 18px rgba(23,32,51,0.04);
+    }
+
+    .info-card h3 {
+        margin-top: 0;
+        color: #172033;
+        font-size: 19px;
+    }
+
+    .info-card p {
+        line-height: 1.65;
+    }
+
+
+    /* ---------- RESULT CARD ---------- */
+
+    .prediction-card {
+        background: linear-gradient(135deg, #172033, #263a5b);
+        color: white;
+        padding: 30px;
+        border-radius: 20px;
+        text-align: center;
+        margin: 20px 0;
+        box-shadow: 0 10px 25px rgba(23,32,51,0.15);
+    }
+
+    .prediction-card .label {
+        color: #bfcce0;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .prediction-card .value {
+        color: white;
+        font-size: 42px;
+        font-weight: 800;
+        margin: 8px 0;
+    }
+
+    .prediction-card .small {
+        color: #d5deeb;
+        font-size: 13px;
+    }
+
+
+    /* ---------- BADGES ---------- */
+
+    .badge {
+        display: inline-block;
+        padding: 6px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+        background: #eef2f7;
+        color: #334155;
+    }
+
+
+    /* ---------- RESEARCH FINDINGS ---------- */
+
+    .finding {
+        background: white;
+        border-left: 4px solid #315477;
+        padding: 17px 20px;
+        border-radius: 0 12px 12px 0;
+        margin-bottom: 12px;
+        box-shadow: 0 3px 12px rgba(23,32,51,0.04);
+    }
+
+    .finding strong {
+        color: #172033;
+    }
+
+
+    /* ---------- FOOTER ---------- */
+
+    .footer {
+        text-align: center;
+        color: #8a94a6;
+        font-size: 12px;
+        padding: 35px 0 15px 0;
+    }
 
 </style>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-# LOAD MODEL
+# MODEL
 # ============================================================
 
 @st.cache_resource
@@ -146,17 +268,21 @@ model = load_model()
 
 
 # ============================================================
-# COUNTRY CARBON INTENSITIES
+# CONSTANTS
 # ============================================================
+
+VALIDATION_RMSE = 0.002342
+VALIDATION_MAE = 0.002004
+OOF_R2 = 0.9611
 
 carbon_intensity = {
     "Norway": 30.75,
     "France": 40.83,
     "Brazil": 106.06,
     "Canada": 185.35,
-    "United Kingdom": 216.50,
+    "UK": 216.50,
     "Germany": 338.36,
-    "United States": 383.78,
+    "US": 383.78,
     "Australia": 553.83,
     "China": 555.40,
     "India": 707.45
@@ -164,7 +290,7 @@ carbon_intensity = {
 
 
 # ============================================================
-# MODEL PERFORMANCE
+# MODEL RESULTS
 # ============================================================
 
 model_results = pd.DataFrame({
@@ -198,33 +324,33 @@ model_results = pd.DataFrame({
     ]
 })
 
-cv_r2 = [0.6571, 0.4396, -0.3717, 0.4713, -0.3959]
-cv_mae = [0.006263, 0.003131, 0.007025, 0.006515, 0.007005]
-
-# Validation error used for approximate prediction reliability
-VALIDATION_RMSE = 0.002342
-VALIDATION_MAE = 0.002004
-
 
 # ============================================================
-# FEATURE IMPORTANCE
+# AGGREGATED DATA FROM EXPERIMENT
 # ============================================================
 
-importance = pd.DataFrame({
-    "Feature": [
-        "Request Rate",
-        "Output Length"
-    ],
-    "Mean Absolute SHAP Value": [
-        0.006561,
-        0.003193
+request_rates = [
+    10, 20, 30, 40, 50, 60, 70, 80, 90,
+    100, 200, 300, 400, 500, 600, 700,
+    800, 900, 1000
+]
+
+energy_by_rate = [
+    0.069743, 0.040786, 0.031892, 0.028035,
+    0.026093, 0.024658, 0.024465, 0.024048,
+    0.023751, 0.023547, 0.022557, 0.022232,
+    0.022061, 0.021942, 0.021923, 0.021859,
+    0.021858, 0.021834, 0.021784
+]
+
+energy_by_length = pd.DataFrame({
+    "Output Length": [256, 512, 1024],
+    "Mean Energy (kWh)": [
+        0.022296,
+        0.027094,
+        0.031937
     ]
 })
-
-importance["Relative Contribution"] = (
-    importance["Mean Absolute SHAP Value"] /
-    importance["Mean Absolute SHAP Value"].sum()
-) * 100
 
 
 # ============================================================
@@ -238,30 +364,20 @@ def predict_energy(request_rate, output_length):
         "hf-output-len": [output_length]
     })
 
-    return float(model.predict(input_data)[0])
+    prediction = model.predict(input_data)[0]
+
+    return max(float(prediction), 0)
 
 
 def get_risk_category(prediction):
 
-    if prediction < 0.02:
+    if prediction < 0.020:
         return "Low"
-    elif prediction < 0.04:
+
+    elif prediction < 0.040:
         return "Medium"
-    else:
-        return "High"
 
-
-def get_reliability(prediction):
-
-    # Approximate reliability based on validation error
-    relative_error = VALIDATION_RMSE / max(abs(prediction), 0.000001)
-
-    if relative_error <= 0.10:
-        return "High", 90
-    elif relative_error <= 0.20:
-        return "Moderate", 75
-    else:
-        return "Lower", 60
+    return "High"
 
 
 def prediction_interval(prediction):
@@ -272,71 +388,83 @@ def prediction_interval(prediction):
     return lower, upper
 
 
+def carbon_emissions(energy, intensity):
+
+    return energy * intensity
+
+
 # ============================================================
-# SIDEBAR
+# TOP NAVIGATION
 # ============================================================
 
-st.sidebar.markdown(
-    """
-    <div style="font-size:24px;font-weight:700;margin-bottom:5px;">
-        AI Energy Intelligence
+st.markdown("""
+<div style="text-align:center; margin-bottom:10px;">
+    <div style="
+        font-size:13px;
+        color:#7a8496;
+        font-weight:600;
+        letter-spacing:1px;
+        text-transform:uppercase;">
+        AI Sustainability Intelligence Platform
     </div>
-    <div style="font-size:13px;color:#9ca3af;margin-bottom:25px;">
-        Predictive modelling and carbon analysis
-    </div>
-    """,
-    unsafe_allow_html=True
+</div>
+""", unsafe_allow_html=True)
+
+
+pages = [
+    "Dashboard",
+    "Project Overview",
+    "Dataset",
+    "Energy Prediction",
+    "Reliability",
+    "What-If Analysis",
+    "Carbon Analysis",
+    "Country Comparison",
+    "Benchmarks",
+    "Feature Importance",
+    "Research Findings"
+]
+
+
+selected_page = st.radio(
+    "",
+    pages,
+    horizontal=True,
+    label_visibility="collapsed"
 )
 
-page = st.sidebar.radio(
-    "Navigation",
-    [
-        "Dashboard",
-        "Project Overview",
-        "Dataset Overview",
-        "Energy Prediction",
-        "Prediction Reliability",
-        "Carbon Analysis",
-        "Country Comparison",
-        "What-If Analysis",
-        "Benchmarks & Validation",
-        "Feature Importance",
-        "Research Findings",
-        "Methodology",
-        "Limitations"
-    ]
-)
 
-st.sidebar.markdown("---")
+# ============================================================
+# HERO
+# ============================================================
 
-st.sidebar.markdown(
-    """
-    **Research Model**
-
-    Algorithm: Gradient Boosting Regressor
-
-    Target: Energy Consumption
-
-    Unit: kWh
-
-    Validation: 5-fold GroupKFold
-    """
-)
+st.markdown("""
+<div class="hero">
+    <h1>AI Energy & Carbon Intelligence</h1>
+    <p>
+        A machine learning system for predicting the electricity
+        consumption of AI inference workloads and evaluating their
+        potential carbon impact across different electricity systems.
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
 
 # ============================================================
 # DASHBOARD
 # ============================================================
 
-if page == "Dashboard":
+if selected_page == "Dashboard":
 
     st.markdown(
-        '<div class="main-title">AI Energy & Carbon Intelligence</div>',
+        '<div class="section-title">Research Dashboard</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Research dashboard for AI workload energy prediction and carbon analysis.</div>',
+        '<div class="section-subtitle">'
+        'A high-level view of the predictive model and its key findings.'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -356,14 +484,14 @@ if page == "Dashboard":
         <div class="metric-card">
             <div class="metric-label">Validation R²</div>
             <div class="metric-value">0.918</div>
-            <div class="metric-description">Mean 5-fold R²</div>
+            <div class="metric-description">Mean 5-fold CV</div>
         </div>
         """, unsafe_allow_html=True)
 
     with c3:
         st.markdown("""
         <div class="metric-card">
-            <div class="metric-label">Validation RMSE</div>
+            <div class="metric-label">RMSE</div>
             <div class="metric-value">0.00234</div>
             <div class="metric-description">kWh</div>
         </div>
@@ -374,67 +502,63 @@ if page == "Dashboard":
         <div class="metric-card">
             <div class="metric-label">Observations</div>
             <div class="metric-value">1,024</div>
-            <div class="metric-description">Completed workloads</div>
+            <div class="metric-description">Completed runs</div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown(
-        '<div class="section-title">Research Question</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    st.write(
-        "Can machine learning accurately predict the electricity consumption "
-        "of AI inference workloads using workload characteristics, and can "
-        "these predictions support carbon-aware analysis?"
-    )
+    left, right = st.columns(2)
 
-    st.markdown(
-        '<div class="section-title">Model Performance</div>',
-        unsafe_allow_html=True
-    )
+    with left:
 
-    fig = px.bar(
-        model_results,
-        x="Model",
-        y="R²",
-        text_auto=".3f",
-        title="Validation R² by Model"
-    )
+        fig = px.line(
+            x=request_rates,
+            y=energy_by_rate,
+            markers=True,
+            labels={
+                "x": "Request Rate",
+                "y": "Mean Energy (kWh)"
+            },
+            title="Energy Consumption vs Request Rate"
+        )
 
-    fig.update_layout(
-        template="plotly_white",
-        yaxis_range=[0, 1],
-        height=450
-    )
+        fig.update_layout(
+            template="plotly_white",
+            height=400,
+            margin=dict(l=20, r=20, t=60, b=20)
+        )
 
-    st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown(
-        '<div class="section-title">Key Findings</div>',
-        unsafe_allow_html=True
-    )
+    with right:
+
+        fig = px.bar(
+            model_results,
+            x="Model",
+            y="R²",
+            title="Model Performance Comparison"
+        )
+
+        fig.update_layout(
+            template="plotly_white",
+            height=400,
+            margin=dict(l=20, r=20, t=60, b=20),
+            yaxis=dict(range=[0, 1])
+        )
+
+        st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("""
-    <div class="finding-card">
-    <strong>Gradient Boosting performed best.</strong><br>
-    It achieved a mean 5-fold validation R² of 0.9181.
-    </div>
-
-    <div class="finding-card">
-    <strong>Request rate was the dominant predictor.</strong><br>
-    Its mean absolute SHAP value was approximately twice that of output length.
-    </div>
-
-    <div class="finding-card">
-    <strong>Output length affected energy consumption.</strong><br>
-    Larger output lengths were associated with higher energy consumption.
-    </div>
-
-    <div class="finding-card">
-    <strong>Carbon footprint depends on the electricity system.</strong><br>
-    The same predicted energy consumption can produce substantially different
-    estimated emissions depending on grid carbon intensity.
+    <div class="info-card">
+        <h3>What the model does</h3>
+        <p>
+        The system takes two workload characteristics as inputs:
+        request rate and output length. It predicts the electricity
+        consumed by the AI inference workload in kilowatt-hours.
+        The predicted energy value is then used as the basis for
+        carbon-footprint scenario analysis.
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -443,233 +567,179 @@ if page == "Dashboard":
 # PROJECT OVERVIEW
 # ============================================================
 
-elif page == "Project Overview":
+elif selected_page == "Project Overview":
 
     st.markdown(
-        '<div class="main-title">Project Overview</div>',
+        '<div class="section-title">Project Overview</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Understanding the research problem and analytical approach.</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="section-title">The Problem</div>',
-        unsafe_allow_html=True
-    )
-
-    st.write(
-        """
-        AI inference requires electricity. As AI systems become increasingly
-        deployed, understanding and estimating their energy consumption becomes
-        important for sustainable computing.
-
-        The amount of energy required by an inference workload can vary according
-        to characteristics such as request rate and output length.
-        """
-    )
-
-    st.markdown(
-        '<div class="section-title">Objective</div>',
-        unsafe_allow_html=True
-    )
-
-    st.write(
-        """
-        The objective is to develop and evaluate supervised machine-learning
-        models capable of predicting the electricity consumption of AI inference
-        workloads.
-        """
-    )
-
-    st.markdown(
-        '<div class="section-title">Prediction Target</div>',
+        '<div class="section-subtitle">'
+        'Understanding the research problem and prediction task.'
+        '</div>',
         unsafe_allow_html=True
     )
 
     st.markdown("""
-    <div class="info-box">
-    <strong>Target variable:</strong> Energy Consumption<br>
-    <strong>Unit:</strong> kWh<br>
-    <strong>Predictors:</strong> Request Rate and Output Length
+    <div class="info-card">
+        <h3>The Problem</h3>
+        <p>
+        Artificial intelligence workloads require electricity to operate.
+        As AI inference becomes increasingly widespread, understanding
+        and predicting its energy consumption becomes important for
+        sustainable computing.
+        </p>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown(
-        '<div class="section-title">Research Pipeline</div>',
-        unsafe_allow_html=True
-    )
+    col1, col2 = st.columns(2)
 
-    pipeline = pd.DataFrame({
-        "Stage": [
-            "AI Workload",
-            "Preprocessing",
-            "Model Training",
-            "Validation",
-            "Energy Prediction",
-            "Carbon Analysis"
-        ],
-        "Description": [
-            "Inference workload characteristics",
-            "Clean and prepare observations",
-            "Train multiple supervised models",
-            "Condition-grouped cross-validation",
-            "Predict electricity consumption",
-            "Combine energy with grid carbon intensity"
-        ]
-    })
+    with col1:
+        st.markdown("""
+        <div class="info-card">
+            <h3>Prediction Task</h3>
+            <p>
+            Predict the electricity consumed by an AI inference workload
+            using workload characteristics available before or during
+            workload planning.
+            </p>
+            <p>
+            <strong>Target:</strong> Energy consumption (kWh)
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    st.dataframe(
-        pipeline,
-        use_container_width=True,
-        hide_index=True
-    )
+    with col2:
+        st.markdown("""
+        <div class="info-card">
+            <h3>Predictors</h3>
+            <p>
+            <strong>Request Rate:</strong> incoming workload intensity.
+            </p>
+            <p>
+            <strong>Output Length:</strong> number of tokens generated
+            by the inference workload.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="info-card">
+        <h3>Research Question</h3>
+        <p style="font-size:18px;">
+        Can machine learning accurately predict the energy consumption
+        of AI inference workloads using workload characteristics?
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
-# DATASET OVERVIEW
+# DATASET
 # ============================================================
 
-elif page == "Dataset Overview":
+elif selected_page == "Dataset":
 
     st.markdown(
-        '<div class="main-title">Dataset Overview</div>',
+        '<div class="section-title">Dataset Overview</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Structure and characteristics of the AI inference workload data.</div>',
+        '<div class="section-subtitle">'
+        'Characteristics of the AI inference workload experiments.'
+        '</div>',
         unsafe_allow_html=True
     )
 
     c1, c2, c3, c4 = st.columns(4)
 
-    with c1:
-        st.metric("Completed Records", "1,024")
+    stats = [
+        ("Observations", "1,024", "Completed workload runs"),
+        ("Request Rates", "19", "10 to 1,000 requests"),
+        ("Output Lengths", "3", "256, 512, 1,024 tokens"),
+        ("Target", "Energy", "Measured in kWh")
+    ]
 
-    with c2:
-        st.metric("Request Rate Levels", "19")
+    for col, stat in zip([c1, c2, c3, c4], stats):
 
-    with c3:
-        st.metric("Output Lengths", "3")
+        with col:
+            st.markdown(f"""
+            <div class="metric-card">
+                <div class="metric-label">{stat[0]}</div>
+                <div class="metric-value">{stat[1]}</div>
+                <div class="metric-description">{stat[2]}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
-    with c4:
-        st.metric("Prediction Target", "Energy kWh")
+    st.markdown("<br>", unsafe_allow_html=True)
 
-    st.markdown(
-        '<div class="section-title">Variables Used for Prediction</div>',
-        unsafe_allow_html=True
-    )
+    left, right = st.columns(2)
 
-    variables = pd.DataFrame({
-        "Variable": [
-            "request_rate_x",
-            "hf-output-len",
-            "energy_kWh"
-        ],
-        "Role": [
-            "Predictor",
-            "Predictor",
-            "Target"
-        ],
-        "Description": [
-            "AI inference requests per second",
-            "Generated output length in tokens",
-            "Measured electricity consumption"
-        ]
-    })
+    with left:
 
-    st.dataframe(
-        variables,
-        use_container_width=True,
-        hide_index=True
-    )
+        fig = px.line(
+            x=request_rates,
+            y=energy_by_rate,
+            markers=True,
+            labels={
+                "x": "Request Rate",
+                "y": "Mean Energy (kWh)"
+            },
+            title="Energy Consumption Across Request Rates"
+        )
 
-    st.markdown(
-        '<div class="section-title">Energy Distribution</div>',
-        unsafe_allow_html=True
-    )
+        fig.update_layout(
+            template="plotly_white",
+            height=420
+        )
 
-    # Representative distribution based on observed dataset statistics
-    energy_stats = pd.DataFrame({
-        "Statistic": [
-            "Minimum",
-            "25th percentile",
-            "Median",
-            "Mean",
-            "75th percentile",
-            "Maximum"
-        ],
-        "Energy (kWh)": [
-            0.014297,
-            0.019584,
-            0.024518,
-            0.027154,
-            0.029574,
-            0.077427
-        ]
-    })
+        st.plotly_chart(fig, use_container_width=True)
 
-    fig = px.bar(
-        energy_stats,
-        x="Statistic",
-        y="Energy (kWh)",
-        text_auto=".4f",
-        title="Observed Energy Consumption Statistics"
-    )
+    with right:
 
-    fig.update_layout(
-        template="plotly_white",
-        height=450
-    )
+        fig = px.bar(
+            energy_by_length,
+            x="Output Length",
+            y="Mean Energy (kWh)",
+            title="Energy Consumption by Output Length"
+        )
 
-    st.plotly_chart(fig, use_container_width=True)
+        fig.update_layout(
+            template="plotly_white",
+            height=420
+        )
 
-    st.markdown(
-        '<div class="section-title">Experimental Workload Structure</div>',
-        unsafe_allow_html=True
-    )
+        st.plotly_chart(fig, use_container_width=True)
 
-    workload = pd.DataFrame({
-        "Output Length": [256, 512, 1024],
-        "Mean Energy (kWh)": [
-            0.022403,
-            0.027094,
-            0.031937
-        ]
-    })
-
-    fig = px.bar(
-        workload,
-        x="Output Length",
-        y="Mean Energy (kWh)",
-        text_auto=".4f",
-        title="Mean Energy Consumption by Output Length"
-    )
-
-    fig.update_layout(
-        template="plotly_white",
-        height=450
-    )
-
-    st.plotly_chart(fig, use_container_width=True)
+    st.markdown("""
+    <div class="info-card">
+        <h3>Observed Energy Distribution</h3>
+        <p>
+        The completed runs have a mean energy consumption of approximately
+        0.0272 kWh. Energy values range from approximately 0.0143 kWh to
+        0.0774 kWh.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
 # ENERGY PREDICTION
 # ============================================================
 
-elif page == "Energy Prediction":
+elif selected_page == "Energy Prediction":
 
     st.markdown(
-        '<div class="main-title">Energy Consumption Prediction</div>',
+        '<div class="section-title">Energy Prediction</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Estimate electricity consumption for an AI inference workload.</div>',
+        '<div class="section-subtitle">'
+        'Enter workload characteristics to estimate electricity consumption.'
+        '</div>',
         unsafe_allow_html=True
     )
 
@@ -677,117 +747,90 @@ elif page == "Energy Prediction":
 
     with left:
 
-        st.markdown(
-            '<div class="section-title">Workload Parameters</div>',
-            unsafe_allow_html=True
-        )
-
         request_rate = st.slider(
-            "Request rate (requests/second)",
-            10,
-            1000,
-            100,
-            10
+            "Request Rate",
+            min_value=10,
+            max_value=1000,
+            value=100,
+            step=10
         )
 
         output_length = st.selectbox(
-            "Output length (tokens)",
-            [256, 512, 1024]
+            "Output Length",
+            [256, 512, 1024],
+            index=1
         )
 
-        predict = st.button(
+        predict_button = st.button(
             "Predict Energy Consumption",
             use_container_width=True
         )
 
     with right:
 
-        if predict:
+        prediction = predict_energy(
+            request_rate,
+            output_length
+        )
 
-            prediction = predict_energy(
-                request_rate,
-                output_length
+        risk = get_risk_category(prediction)
+
+        st.markdown(f"""
+        <div class="prediction-card">
+            <div class="label">Predicted Energy Consumption</div>
+            <div class="value">{prediction:.5f} kWh</div>
+            <div class="small">
+                Risk category: {risk}
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        c1, c2 = st.columns(2)
+
+        with c1:
+            st.metric(
+                "Estimated MAE",
+                f"{VALIDATION_MAE:.5f} kWh"
             )
 
-            risk = get_risk_category(prediction)
-            reliability, reliability_score = get_reliability(prediction)
-
-            lower, upper = prediction_interval(prediction)
-
-            st.markdown(
-                f"""
-                <div class="result-box">
-                    <div class="result-title">
-                        Estimated Electricity Consumption
-                    </div>
-                    <div class="result-value">
-                        {prediction:.6f}
-                    </div>
-                    <div class="result-unit">
-                        kWh
-                    </div>
-                </div>
-                """,
-                unsafe_allow_html=True
+        with c2:
+            st.metric(
+                "Validation RMSE",
+                f"{VALIDATION_RMSE:.5f} kWh"
             )
 
-            a, b, c = st.columns(3)
-
-            with a:
-                st.metric("Energy Risk", risk)
-
-            with b:
-                st.metric(
-                    "Reliability",
-                    f"{reliability_score}%"
-                )
-
-            with c:
-                st.metric(
-                    "Validation Error",
-                    f"±{VALIDATION_RMSE:.4f} kWh"
-                )
-
-            st.info(
-                f"Approximate expected range: "
-                f"{lower:.6f} to {upper:.6f} kWh."
-            )
-
-            st.caption(
-                "Reliability is an approximate indicator derived from validation "
-                "error. It is not a probability that the prediction is correct."
-            )
-
-        else:
-
-            st.markdown(
-                """
-                <div class="info-box">
-                Enter the workload parameters and generate an energy prediction.
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
+    st.markdown("""
+    <div class="info-card">
+        <h3>Interpretation</h3>
+        <p>
+        The prediction represents the estimated electricity consumption
+        associated with the selected AI workload configuration. The model
+        was trained using request rate and output length as predictors.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
-# PREDICTION RELIABILITY
+# RELIABILITY
 # ============================================================
 
-elif page == "Prediction Reliability":
+elif selected_page == "Reliability":
 
     st.markdown(
-        '<div class="main-title">Prediction Reliability</div>',
+        '<div class="section-title">Prediction Reliability</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Assess how much confidence should be placed in an individual energy prediction.</div>',
+        '<div class="section-subtitle">'
+        'An error-based view of the model prediction.'
+        '</div>',
         unsafe_allow_html=True
     )
 
     request_rate = st.slider(
-        "Request rate",
+        "Request Rate",
         10,
         1000,
         100,
@@ -796,9 +839,9 @@ elif page == "Prediction Reliability":
     )
 
     output_length = st.selectbox(
-        "Output length",
+        "Output Length",
         [256, 512, 1024],
-        key="reliability_output"
+        key="reliability_length"
     )
 
     prediction = predict_energy(
@@ -806,16 +849,11 @@ elif page == "Prediction Reliability":
         output_length
     )
 
-    risk = get_risk_category(prediction)
-    reliability, reliability_score = get_reliability(prediction)
     lower, upper = prediction_interval(prediction)
 
-    st.markdown(
-        '<div class="section-title">Prediction Assessment</div>',
-        unsafe_allow_html=True
-    )
+    risk = get_risk_category(prediction)
 
-    c1, c2, c3, c4 = st.columns(4)
+    c1, c2, c3 = st.columns(3)
 
     with c1:
         st.metric(
@@ -825,59 +863,110 @@ elif page == "Prediction Reliability":
 
     with c2:
         st.metric(
-            "Energy Risk",
-            risk
+            "Approx. Lower Bound",
+            f"{lower:.5f} kWh"
         )
 
     with c3:
         st.metric(
-            "Reliability",
-            f"{reliability_score}%"
+            "Approx. Upper Bound",
+            f"{upper:.5f} kWh"
         )
 
-    with c4:
-        st.metric(
-            "Validation RMSE",
-            f"{VALIDATION_RMSE:.5f}"
-        )
+    st.markdown(f"""
+    <div class="info-card">
+        <h3>Energy Risk Category: {risk}</h3>
+        <p>
+        This category is an analytical indicator based on the predicted
+        energy value. It is not a probability of model correctness.
+        </p>
+        <p>
+        The approximate error range is based on the model's validation
+        RMSE of {VALIDATION_RMSE:.5f} kWh.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    st.progress(reliability_score / 100)
+    fig = go.Figure()
+
+    fig.add_trace(
+        go.Scatter(
+            x=["Lower estimate", "Prediction", "Upper estimate"],
+            y=[lower, prediction, upper],
+            mode="lines+markers",
+            line=dict(width=4)
+        )
+    )
+
+    fig.update_layout(
+        title="Prediction Error Range",
+        template="plotly_white",
+        yaxis_title="Energy (kWh)",
+        height=380
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# ============================================================
+# WHAT-IF ANALYSIS
+# ============================================================
+
+elif selected_page == "What-If Analysis":
 
     st.markdown(
-        '<div class="section-title">Estimated Prediction Range</div>',
+        '<div class="section-title">What-If Analysis</div>',
         unsafe_allow_html=True
     )
 
-    range_df = pd.DataFrame({
-        "Value": ["Lower", "Prediction", "Upper"],
-        "Energy (kWh)": [
-            lower,
-            prediction,
-            upper
-        ]
+    st.markdown(
+        '<div class="section-subtitle">'
+        'Explore how different workload configurations affect predicted energy.'
+        '</div>',
+        unsafe_allow_html=True
+    )
+
+    output_length = st.selectbox(
+        "Choose Output Length",
+        [256, 512, 1024],
+        index=1
+    )
+
+    scenario_rates = np.array(
+        [10, 20, 50, 100, 200, 400, 600, 800, 1000]
+    )
+
+    scenario_predictions = [
+        predict_energy(rate, output_length)
+        for rate in scenario_rates
+    ]
+
+    scenario_df = pd.DataFrame({
+        "Request Rate": scenario_rates,
+        "Predicted Energy (kWh)": scenario_predictions
     })
 
-    fig = px.bar(
-        range_df,
-        x="Value",
-        y="Energy (kWh)",
-        text_auto=".5f",
-        title="Prediction and Approximate Error Range"
+    fig = px.line(
+        scenario_df,
+        x="Request Rate",
+        y="Predicted Energy (kWh)",
+        markers=True,
+        title=f"Predicted Energy Across Request Rates — {output_length} Tokens"
     )
 
     fig.update_layout(
         template="plotly_white",
-        height=400
+        height=450
     )
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+    st.plotly_chart(fig, use_container_width=True)
 
-    st.warning(
-        "This reliability indicator is based on validation error and should "
-        "not be interpreted as a formal statistical probability."
+    st.dataframe(
+        scenario_df.style.format({
+            "Predicted Energy (kWh)": "{:.5f}"
+        }),
+        use_container_width=True,
+        hide_index=True
     )
 
 
@@ -885,720 +974,378 @@ elif page == "Prediction Reliability":
 # CARBON ANALYSIS
 # ============================================================
 
-elif page == "Carbon Analysis":
+elif selected_page == "Carbon Analysis":
 
     st.markdown(
-        '<div class="main-title">Carbon Footprint Analysis</div>',
+        '<div class="section-title">Carbon Analysis</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Translate predicted electricity consumption into estimated carbon emissions.</div>',
+        '<div class="section-subtitle">'
+        'Convert predicted electricity consumption into estimated CO₂ emissions.'
+        '</div>',
         unsafe_allow_html=True
     )
 
-    c1, c2 = st.columns(2)
+    left, right = st.columns(2)
 
-    with c1:
+    with left:
+
         request_rate = st.slider(
-            "Request rate",
+            "Request Rate",
             10,
             1000,
             100,
             10,
-            key="carbon_request"
+            key="carbon_rate"
         )
 
-    with c2:
         output_length = st.selectbox(
-            "Output length",
+            "Output Length",
             [256, 512, 1024],
-            key="carbon_output"
+            key="carbon_length"
         )
 
-    country = st.selectbox(
-        "Electricity system",
-        list(carbon_intensity.keys()),
-        index=list(carbon_intensity.keys()).index("India")
-    )
+        country = st.selectbox(
+            "Electricity System",
+            list(carbon_intensity.keys())
+        )
 
-    predicted_energy = predict_energy(
+    prediction = predict_energy(
         request_rate,
         output_length
     )
 
     intensity = carbon_intensity[country]
 
-    emissions = predicted_energy * intensity
-
-    a, b, c = st.columns(3)
-
-    with a:
-        st.metric(
-            "Predicted Energy",
-            f"{predicted_energy:.6f} kWh"
-        )
-
-    with b:
-        st.metric(
-            "Grid Carbon Intensity",
-            f"{intensity:.2f} gCO₂/kWh"
-        )
-
-    with c:
-        st.metric(
-            "Estimated Emissions",
-            f"{emissions:.3f} gCO₂"
-        )
-
-    st.markdown(
-        '<div class="section-title">Calculation</div>',
-        unsafe_allow_html=True
+    emissions = carbon_emissions(
+        prediction,
+        intensity
     )
 
-    st.latex(
-        r"\text{Carbon Emissions} = "
-        r"\text{Predicted Energy} \times "
-        r"\text{Grid Carbon Intensity}"
-    )
+    with right:
 
-    st.write(
-        f"The predicted workload consumes approximately "
-        f"**{predicted_energy:.6f} kWh**. Under the selected electricity "
-        f"system, this corresponds to approximately **{emissions:.3f} gCO₂**."
-    )
+        st.markdown(f"""
+        <div class="prediction-card">
+            <div class="label">Estimated Carbon Footprint</div>
+            <div class="value">{emissions:.3f} gCO₂</div>
+            <div class="small">
+                Based on predicted energy of {prediction:.5f} kWh
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="info-card">
+        <h3>Calculation</h3>
+        <p>
+        Estimated emissions are calculated by multiplying predicted
+        electricity consumption by the selected electricity system's
+        carbon intensity.
+        </p>
+        <p>
+        <strong>Energy × Carbon Intensity = Estimated CO₂</strong>
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
 # COUNTRY COMPARISON
 # ============================================================
 
-elif page == "Country Comparison":
+elif selected_page == "Country Comparison":
 
     st.markdown(
-        '<div class="main-title">Country-Level Carbon Comparison</div>',
+        '<div class="section-title">Country Comparison</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Compare the same AI workload across different electricity systems.</div>',
+        '<div class="section-subtitle">'
+        'Compare the estimated carbon footprint of the same AI workload '
+        'under different electricity systems.'
+        '</div>',
         unsafe_allow_html=True
     )
 
-    request_rate = st.slider(
-        "Request rate",
-        10,
-        1000,
-        100,
-        10,
-        key="country_request"
-    )
+    col1, col2 = st.columns(2)
 
-    output_length = st.selectbox(
-        "Output length",
-        [256, 512, 1024],
-        key="country_output"
-    )
+    with col1:
 
-    energy = predict_energy(
+        request_rate = st.slider(
+            "Request Rate",
+            10,
+            1000,
+            100,
+            10,
+            key="country_rate"
+        )
+
+    with col2:
+
+        output_length = st.selectbox(
+            "Output Length",
+            [256, 512, 1024],
+            key="country_length"
+        )
+
+    prediction = predict_energy(
         request_rate,
         output_length
     )
 
     comparison = pd.DataFrame({
         "Country": list(carbon_intensity.keys()),
-        "Carbon Intensity (gCO₂/kWh)": list(carbon_intensity.values())
+        "Carbon Intensity": list(carbon_intensity.values())
     })
 
-    comparison["Estimated Emissions (gCO₂)"] = (
-        energy *
-        comparison["Carbon Intensity (gCO₂/kWh)"]
-    )
-
-    comparison = comparison.sort_values(
-        "Estimated Emissions (gCO₂)"
+    comparison["Estimated CO₂ (g)"] = (
+        prediction * comparison["Carbon Intensity"]
     )
 
     fig = px.bar(
-        comparison,
-        x="Country",
-        y="Estimated Emissions (gCO₂)",
-        text_auto=".2f",
-        title="Estimated Carbon Footprint by Electricity System"
-    )
-
-    fig.update_layout(
-        template="plotly_white",
-        height=500
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    st.dataframe(
-        comparison.style.format({
-            "Carbon Intensity (gCO₂/kWh)": "{:.2f}",
-            "Estimated Emissions (gCO₂)": "{:.3f}"
-        }),
-        use_container_width=True,
-        hide_index=True
-    )
-
-    st.info(
-        "The predicted energy is held constant. Differences in emissions are "
-        "caused by differences in electricity-grid carbon intensity."
-    )
-
-
-# ============================================================
-# WHAT-IF ANALYSIS
-# ============================================================
-
-elif page == "What-If Analysis":
-
-    st.markdown(
-        '<div class="main-title">What-If Analysis</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="subtitle">Explore how workload characteristics influence predicted energy consumption.</div>',
-        unsafe_allow_html=True
-    )
-
-    output_length = st.selectbox(
-        "Output length",
-        [256, 512, 1024],
-        key="whatif_output"
-    )
-
-    rates = np.arange(10, 1001, 10)
-
-    predictions = [
-        predict_energy(rate, output_length)
-        for rate in rates
-    ]
-
-    whatif = pd.DataFrame({
-        "Request Rate": rates,
-        "Predicted Energy": predictions
-    })
-
-    fig = px.line(
-        whatif,
-        x="Request Rate",
-        y="Predicted Energy",
-        title=f"Predicted Energy vs Request Rate — {output_length} Tokens"
+        comparison.sort_values("Estimated CO₂ (g)"),
+        x="Estimated CO₂ (g)",
+        y="Country",
+        orientation="h",
+        title=f"Estimated Carbon Footprint — {output_length} Tokens"
     )
 
     fig.update_layout(
         template="plotly_white",
         height=500,
-        xaxis_title="Request rate (requests/second)",
-        yaxis_title="Predicted energy (kWh)"
+        xaxis_title="Estimated CO₂ (g)"
     )
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+    st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown(
-        '<div class="section-title">Compare Output Lengths</div>',
-        unsafe_allow_html=True
-    )
-
-    all_rows = []
-
-    for length in [256, 512, 1024]:
-
-        for rate in rates:
-
-            all_rows.append({
-                "Request Rate": rate,
-                "Output Length": str(length),
-                "Predicted Energy": predict_energy(rate, length)
-            })
-
-    all_data = pd.DataFrame(all_rows)
-
-    fig = px.line(
-        all_data,
-        x="Request Rate",
-        y="Predicted Energy",
-        color="Output Length",
-        title="Predicted Energy Across Workload Conditions"
-    )
-
-    fig.update_layout(
-        template="plotly_white",
-        height=500
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    st.info(
-        "The observed dataset shows a sharp decrease in energy consumption at "
-        "low request rates followed by a plateau at higher request rates. "
-        "This describes the behaviour present in the studied workload and "
-        "should not be interpreted as a universal causal relationship."
+    st.dataframe(
+        comparison.style.format({
+            "Carbon Intensity": "{:.2f}",
+            "Estimated CO₂ (g)": "{:.3f}"
+        }),
+        use_container_width=True,
+        hide_index=True
     )
 
 
 # ============================================================
-# BENCHMARKS & VALIDATION
+# BENCHMARKS
 # ============================================================
 
-elif page == "Benchmarks & Validation":
+elif selected_page == "Benchmarks":
 
     st.markdown(
-        '<div class="main-title">Benchmarks & Validation Analytics</div>',
+        '<div class="section-title">Model Benchmarks & Validation</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Evaluation of model accuracy, generalisation and validation stability.</div>',
+        '<div class="section-subtitle">'
+        'Comparison of regression and deep learning models.'
+        '</div>',
         unsafe_allow_html=True
     )
 
     st.dataframe(
         model_results.style.format({
-            "MAE": "{:.6f}",
-            "RMSE": "{:.6f}",
+            "MAE": "{:.5f}",
+            "RMSE": "{:.5f}",
             "R²": "{:.4f}"
         }),
         use_container_width=True,
         hide_index=True
     )
 
-    c1, c2 = st.columns(2)
+    left, right = st.columns(2)
 
-    with c1:
+    with left:
 
         fig = px.bar(
             model_results,
             x="Model",
             y="R²",
-            text_auto=".3f",
             title="R² Comparison"
         )
 
         fig.update_layout(
             template="plotly_white",
-            yaxis_range=[0, 1],
-            height=450
+            height=420,
+            yaxis=dict(range=[0, 1])
         )
 
-        st.plotly_chart(
-            fig,
-            use_container_width=True
-        )
+        st.plotly_chart(fig, use_container_width=True)
 
-    with c2:
+    with right:
 
         fig = px.bar(
             model_results,
             x="Model",
             y="RMSE",
-            text_auto=".4f",
             title="RMSE Comparison"
         )
 
         fig.update_layout(
             template="plotly_white",
-            height=450
+            height=420
         )
 
-        st.plotly_chart(
-            fig,
-            use_container_width=True
-        )
+        st.plotly_chart(fig, use_container_width=True)
 
-    st.markdown(
-        '<div class="section-title">Cross-Validation Stability</div>',
-        unsafe_allow_html=True
-    )
-
-    folds = pd.DataFrame({
-        "Fold": [1, 2, 3, 4, 5],
-        "R²": cv_r2,
-        "MAE": cv_mae
-    })
-
-    fig = px.bar(
-        folds,
-        x="Fold",
-        y="R²",
-        text_auto=".3f",
-        title="Gradient Boosting R² Across Validation Folds"
-    )
-
-    fig.update_layout(
-        template="plotly_white",
-        height=450
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    st.dataframe(
-        folds.style.format({
-            "R²": "{:.4f}",
-            "MAE": "{:.6f}"
-        }),
-        use_container_width=True,
-        hide_index=True
-    )
-
-    st.markdown(
-        '<div class="section-title">Generalisation Check</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        """
-        <div class="info-box">
-        <strong>Pooled out-of-fold R²: 0.9611</strong><br><br>
-        The pooled out-of-fold evaluation indicates strong predictive performance
-        when predictions are generated for workload conditions not used during
-        training.
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
-
-    st.warning(
-        "The mean fold R² and pooled out-of-fold R² are different statistics. "
-        "The former averages the five fold-level R² values, while the latter "
-        "calculates R² after pooling all out-of-fold predictions."
-    )
+    st.markdown("""
+    <div class="info-card">
+        <h3>Selected Model: Gradient Boosting Regressor</h3>
+        <p>
+        Gradient Boosting achieved the strongest overall validation
+        performance among the tested models, with a mean cross-validation
+        R² of 0.9181 and RMSE of 0.002342 kWh.
+        </p>
+        <p>
+        The pooled out-of-fold R² was approximately 0.9611.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
 # FEATURE IMPORTANCE
 # ============================================================
 
-elif page == "Feature Importance":
+elif selected_page == "Feature Importance":
 
     st.markdown(
-        '<div class="main-title">Model Interpretation</div>',
+        '<div class="section-title">Feature Importance</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Understanding which workload characteristics influence model predictions.</div>',
+        '<div class="section-subtitle">'
+        'SHAP-based interpretation of the selected Gradient Boosting model.'
+        '</div>',
         unsafe_allow_html=True
     )
+
+    shap_values = pd.DataFrame({
+        "Feature": [
+            "Request Rate",
+            "Output Length"
+        ],
+        "Mean |SHAP|": [
+            0.006561,
+            0.003193
+        ]
+    })
 
     fig = px.bar(
-        importance,
-        x="Feature",
-        y="Mean Absolute SHAP Value",
-        text_auto=".4f",
-        title="Feature Influence on Energy Predictions"
+        shap_values.sort_values("Mean |SHAP|"),
+        x="Mean |SHAP|",
+        y="Feature",
+        orientation="h",
+        title="Mean Absolute SHAP Importance"
     )
 
     fig.update_layout(
         template="plotly_white",
-        height=450
+        height=400
     )
 
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
+    st.plotly_chart(fig, use_container_width=True)
 
-    st.dataframe(
-        importance.style.format({
-            "Mean Absolute SHAP Value": "{:.6f}",
-            "Relative Contribution": "{:.1f}%"
-        }),
-        use_container_width=True,
-        hide_index=True
-    )
+    ratio = 0.006561 / 0.003193
 
-    st.markdown(
-        '<div class="section-title">Relative Contribution</div>',
-        unsafe_allow_html=True
-    )
-
-    fig = px.pie(
-        importance,
-        names="Feature",
-        values="Relative Contribution",
-        hole=0.45,
-        title="Relative Feature Influence"
-    )
-
-    fig.update_layout(
-        template="plotly_white",
-        height=450
-    )
-
-    st.plotly_chart(
-        fig,
-        use_container_width=True
-    )
-
-    st.markdown(
-        '<div class="section-title">Interpretation</div>',
-        unsafe_allow_html=True
-    )
-
-    st.write(
-        """
-        Request rate has the largest mean absolute SHAP value, indicating that
-        it contributes more strongly to the model's predictions than output length.
-
-        The model also captures a nonlinear relationship between request rate and
-        predicted energy. Energy decreases sharply at lower request rates and
-        approaches a plateau at higher request rates within the observed workload.
-        """
-    )
-
-    st.warning(
-        "Feature importance describes predictive behaviour and should not be "
-        "interpreted as proof of causality."
-    )
+    st.markdown(f"""
+    <div class="info-card">
+        <h3>Interpretation</h3>
+        <p>
+        Request rate is the most influential predictor in the final model,
+        with a mean absolute SHAP value approximately {ratio:.1f} times
+        that of output length.
+        </p>
+        <p>
+        This indicates that workload intensity plays a stronger role in
+        the model's energy predictions within this experimental dataset.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 # ============================================================
 # RESEARCH FINDINGS
 # ============================================================
 
-elif page == "Research Findings":
+elif selected_page == "Research Findings":
 
     st.markdown(
-        '<div class="main-title">Research Findings</div>',
+        '<div class="section-title">Research Findings</div>',
         unsafe_allow_html=True
     )
 
     st.markdown(
-        '<div class="subtitle">Principal findings obtained from the predictive modelling analysis.</div>',
+        '<div class="section-subtitle">'
+        'Key empirical findings from the modelling experiment.'
+        '</div>',
         unsafe_allow_html=True
     )
 
     findings = [
+
         (
-            "Gradient Boosting was the strongest model.",
-            "It achieved the best mean validation performance with R² = 0.9181, MAE = 0.002004 kWh and RMSE = 0.002342 kWh."
+            "Gradient Boosting performed best.",
+            "The Gradient Boosting model achieved a mean 5-fold "
+            "cross-validation R² of 0.9181 and RMSE of 0.002342 kWh."
         ),
+
         (
-            "Request rate was the dominant predictor.",
-            "Its mean absolute SHAP value was approximately twice that of output length."
+            "Request rate was the strongest predictor.",
+            "SHAP analysis showed request rate had substantially greater "
+            "average influence than output length."
         ),
+
         (
-            "Output length affected energy consumption.",
-            "Mean energy increased from approximately 0.0224 kWh at 256 tokens to 0.0319 kWh at 1024 tokens."
+            "Output length affects energy consumption.",
+            "Average energy increased from approximately 0.0223 kWh "
+            "for 256 tokens to 0.0319 kWh for 1,024 tokens."
         ),
+
         (
-            "The relationship with request rate was nonlinear.",
-            "Energy decreased sharply at low request rates and approached a plateau at higher request rates."
+            "Energy does not increase proportionally with output length.",
+            "The relationship between output length and energy consumption "
+            "is not simply linear across the tested workloads."
         ),
+
         (
-            "The neural network did not outperform tree-based models.",
-            "The Deep Learning MLP achieved lower validation performance than Gradient Boosting for this dataset."
+            "Carbon intensity changes the environmental footprint.",
+            "The same predicted workload can have substantially different "
+            "estimated emissions depending on the electricity system "
+            "supplying the computation."
         ),
+
         (
-            "Electricity-grid carbon intensity strongly affects estimated emissions.",
-            "The same predicted energy consumption produces different carbon estimates under different electricity systems."
+            "The model is workload-specific.",
+            "The findings describe the experimental AI inference workload "
+            "represented in the dataset and should not automatically be "
+            "generalised to every AI model or data centre."
         )
     ]
 
     for title, description in findings:
 
-        st.markdown(
-            f"""
-            <div class="finding-card">
-                <strong>{title}</strong>
-                <br><br>
-                <span style="color:#6b7280;">
-                    {description}
-                </span>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-
-# ============================================================
-# METHODOLOGY
-# ============================================================
-
-elif page == "Methodology":
-
-    st.markdown(
-        '<div class="main-title">Research Methodology</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="subtitle">End-to-end predictive modelling workflow.</div>',
-        unsafe_allow_html=True
-    )
-
-    stages = [
-        (
-            "1. Problem Definition",
-            "Predict electricity consumption of an AI inference workload."
-        ),
-        (
-            "2. Data Understanding",
-            "Analyse workload characteristics, energy measurements and experimental conditions."
-        ),
-        (
-            "3. Data Cleaning",
-            "Remove incomplete workload runs and retain completed observations."
-        ),
-        (
-            "4. Feature Selection",
-            "Use request rate and output length as primary pre-run workload predictors."
-        ),
-        (
-            "5. Model Development",
-            "Compare Linear Regression, Ridge, Random Forest, Gradient Boosting and a neural network."
-        ),
-        (
-            "6. Validation",
-            "Use condition-grouped 5-fold GroupKFold validation."
-        ),
-        (
-            "7. Interpretation",
-            "Use SHAP-based feature importance to examine model behaviour."
-        ),
-        (
-            "8. Carbon Extension",
-            "Combine predicted energy with country-level electricity carbon intensity."
-        )
-    ]
-
-    for title, description in stages:
-
-        st.markdown(
-            f"""
-            <div class="metric-card" style="margin-bottom:12px;">
-                <strong>{title}</strong>
-                <br>
-                <span style="color:#6b7280;">{description}</span>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    st.markdown(
-        '<div class="section-title">Prediction Pipeline</div>',
-        unsafe_allow_html=True
-    )
-
-    st.write(
-        """
-        Request Rate + Output Length
-        → Gradient Boosting Regressor
-        → Predicted Energy Consumption
-        → Grid Carbon Intensity
-        → Estimated Carbon Footprint
-        """
-    )
-
-
-# ============================================================
-# LIMITATIONS
-# ============================================================
-
-elif page == "Limitations":
-
-    st.markdown(
-        '<div class="main-title">Limitations & Scope</div>',
-        unsafe_allow_html=True
-    )
-
-    st.markdown(
-        '<div class="subtitle">Important considerations when interpreting the results.</div>',
-        unsafe_allow_html=True
-    )
-
-    limitations = [
-        (
-            "Dataset scope",
-            "The dataset represents a specific AI inference workload configuration and should not automatically be generalized to every AI model or hardware environment."
-        ),
-        (
-            "Workload characteristics",
-            "The predictive model uses request rate and output length as its primary predictors."
-        ),
-        (
-            "Carbon estimation",
-            "Carbon emissions are estimated by multiplying predicted energy by country-level grid carbon intensity."
-        ),
-        (
-            "Temporal resolution",
-            "The country comparison uses annual electricity carbon-intensity values and therefore does not represent real-time hourly grid conditions."
-        ),
-        (
-            "Causal interpretation",
-            "The model identifies predictive relationships rather than proving that changing a workload variable will necessarily cause a corresponding change in energy consumption."
-        ),
-        (
-            "Reliability indicator",
-            "The prediction reliability score is an approximate validation-error-based indicator and is not a formal probability of correctness."
-        ),
-        (
-            "Operational constraints",
-            "Real-world carbon-aware deployment would also need to consider latency, cost, hardware availability, privacy and workload location."
-        )
-    ]
-
-    for title, description in limitations:
-
-        st.markdown(
-            f"""
-            <div class="metric-card" style="margin-bottom:14px;">
-                <div style="font-size:18px;font-weight:600;">
-                    {title}
-                </div>
-                <div style="color:#6b7280;margin-top:6px;">
-                    {description}
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
-    st.markdown(
-        '<div class="section-title">Future Improvements</div>',
-        unsafe_allow_html=True
-    )
-
-    st.write(
-        """
-        Future work could incorporate GPU utilisation, memory utilisation,
-        hardware configuration, execution duration, power characteristics and
-        higher-resolution electricity-grid carbon intensity. These additions
-        could support more comprehensive workload-level energy modelling.
-        """
-    )
+        st.markdown(f"""
+        <div class="finding">
+            <strong>{title}</strong>
+            <p>{description}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
 
 # ============================================================
 # FOOTER
 # ============================================================
 
-st.markdown("---")
-
-st.markdown(
-    """
-    <div class="footer">
-        AI Energy & Carbon Intelligence | Predictive Modelling Research Project
-        <br>
-        Gradient Boosting Regression | Energy Consumption Prediction | Carbon Analysis
-    </div>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="footer">
+    AI Energy & Carbon Intelligence · Machine Learning Research Project
+</div>
+""", unsafe_allow_html=True)
